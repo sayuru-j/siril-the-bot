@@ -20,7 +20,8 @@ export default function Chat() {
   const [message, setMessage] = useState("");
   const [prevMessage, setPrevMessage] = useState("");
   const [sent, setSent] = useState(false);
-  const [textToSpeechAvailable, setTextToSpeechAvailable] = useState(false);
+  const [isTextToSpeechAvailable, setIsTextToSpeechAvailable] = useState(false);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
   const [chatRes, setChatRes] = useState("");
 
@@ -69,7 +70,7 @@ export default function Chat() {
   const audioRef = useRef();
 
   async function playTextToSpeech() {
-    if (textToSpeechAvailable) {
+    if (isTextToSpeechAvailable) {
       try {
         const response = await fetch(`${apiUrl}/text-to-speech`, {
           method: "POST",
@@ -143,7 +144,7 @@ export default function Chat() {
                   }}
                 />
                 <div className="absolute bottom-0 right-0 flex items-center justify-between gap-2">
-                  {textToSpeechAvailable ? (
+                  {isTextToSpeechAvailable ? (
                     <button onClick={playTextToSpeech} type="button">
                       <audio ref={audioRef} />
                       <Volume1Icon className="w-5 opacity-60 hover:opacity-100 hover:scale-110 transition-all duration-200 ease-in-out" />
@@ -151,7 +152,7 @@ export default function Chat() {
                   ) : (
                     <button
                       type="button"
-                      onClick={() => setTextToSpeechAvailable(true)}
+                      onClick={() => setIsTextToSpeechAvailable(true)}
                     >
                       <VolumeXIcon className="w-5 opacity-60 hover:opacity-100 hover:scale-110 transition-all duration-200 ease-in-out" />
                     </button>
