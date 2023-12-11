@@ -15,8 +15,13 @@ module.exports = {
       colors: {
         gunmetal: "#092327",
         purp: "#67568c",
+        cards: "#fef7d2",
+        darkText: "#573a4a",
+        lightText: "#fa8f4b",
+        altText: "#267e7c",
+        altBg: "#fcc46f",
       },
     },
   },
-  plugins: [require("tailwind-scrollbar")],
+  plugins: [require("tailwind-scrollbar"), require("tailwindcss-patterns")],
 };
