@@ -3,8 +3,10 @@
 import { useTypingEffect } from "@/hooks/typing-effect";
 import {
   BotIcon,
+  CogIcon,
   CopyIcon,
   Edit2Icon,
+  OrbitIcon,
   SendHorizontalIcon,
   Volume1Icon,
   VolumeXIcon,
@@ -22,6 +24,7 @@ export default function Chat() {
   const [sent, setSent] = useState(false);
   const [isTextToSpeechAvailable, setIsTextToSpeechAvailable] = useState(false);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [isReplyLoading, setIsReplyLoading] = useState(false);
 
   const [chatRes, setChatRes] = useState("");
 
@@ -29,6 +32,7 @@ export default function Chat() {
     try {
       setPrevMessage(message);
       setSent(true);
+      setIsReplyLoading(true);
 
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -41,12 +45,14 @@ export default function Chat() {
       });
 
       if (!response.ok) {
+        setIsReplyLoading(false);
         throw new Error("Error sending message");
       }
 
       const data = await response.json();
       setChatRes(data?.message);
       setMessage("");
+      setIsReplyLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -102,7 +108,7 @@ export default function Chat() {
   return (
     <div className="max-w-3xl mx-auto pt-2 sm:px-0 px-4">
       <div className="flex flex-col gap-2 min-h-[80vh]">
-        <div className="p-2 rounded-3xl relative">
+        <div className="py-2 px-4 rounded-3xl relative">
           {prevMessage && sent && (
             <div>
               {prevMessage}
@@ -112,9 +118,13 @@ export default function Chat() {
             </div>
           )}
         </div>
-        <div className="flex gap-2 border p-5 rounded-3xl overflow-y-auto">
+        <div className="flex gap-2 border p-8 rounded-3xl overflow-y-auto">
           <div className="">
-            <BotIcon className="w-6 h-6" />
+            {isReplyLoading ? (
+              <OrbitIcon className="w-5 h-5 animate-spin" />
+            ) : (
+              <BotIcon className="w-6 h-6" />
+            )}
           </div>
           <div className="rounded-3xl relative w-full">
             {reply ? (
@@ -143,7 +153,7 @@ export default function Chat() {
                     },
                   }}
                 />
-                <div className="absolute bottom-0 right-0 flex items-center justify-between gap-2">
+                <div className="absolute -bottom-5 -right-3 flex items-center justify-between gap-2">
                   {isTextToSpeechAvailable ? (
                     <button onClick={playTextToSpeech} type="button">
                       <audio ref={audioRef} />
@@ -164,8 +174,8 @@ export default function Chat() {
               </div>
             ) : (
               <div className="flex items-center space-x-1">
-                <h2>Hearing you</h2>
-                <h2 className="animate-bounce">👀</h2>
+                <h2>Listening to you!</h2>
+                <h2 className="animate-bounce hidden">👀</h2>
               </div>
             )}
           </div>
@@ -173,20 +183,19 @@ export default function Chat() {
       </div>
 
       <div className="sticky bottom-0 z-50 pb-2 pt-6 max-w-3xl mx-auto bg-white flex flex-col justify-center items-center rounded-t-3xl">
-        <div className="flex w-full items-center justify-center relative break-words hover:break-words">
-          <div className="w-full break-words hover:break-words">
-            {/* Make words break when it reaches the max width */}
-            <input
-              type="text"
-              className="w-full py-3 px-3 text-opacity-70 border rounded-3xl !outline-none focus:outline-none"
-              placeholder="Ask Something!"
+        <div className="flex w-full items-center justify-center relative">
+          <div className="w-full">
+            <div
+              contentEditable="true"
+              className="w-full pl-6 pr-12 py-3 text-opacity-70 border rounded-3xl !outline-none focus:outline-none whitespace-normal resize-y"
+              placeholder="Ask anything!"
               value={message}
               onChange={(e) => {
                 setMessage(e.target.value);
                 setSent(false);
               }}
               onKeyDown={(e) => {
-                if (e.key == "Enter") {
+                if (e.key === "Enter") {
                   sendMessage();
                 }
               }}
