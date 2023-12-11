@@ -101,7 +101,7 @@ export default function Chat() {
 
   return (
     <div className="max-w-3xl mx-auto pt-2 sm:px-0 px-4">
-      <div className="flex flex-col gap-2 min-h-[85vh]">
+      <div className="flex flex-col gap-2 min-h-[80vh]">
         <div className="p-2 rounded-3xl relative">
           {prevMessage && sent && (
             <div>

@@ -12,7 +12,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`max-h-screen ${space_grotesk.className}`}>
+      <body className={space_grotesk.className}>
         <Header />
         {children}
       </body>
