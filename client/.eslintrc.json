@@ -1,11 +1,6 @@
 {
   "extends": ["next", "next/core-web-vitals"],
   "rules": {
-    "react/no-children-prop": [
-      "error",
-      {
-        "allowFunctions": true
-      }
-    ]
+    "react/no-children-prop": "off"
   }
 }
