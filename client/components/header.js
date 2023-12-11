@@ -15,7 +15,9 @@ export default function Header() {
         <h1 className="font-black text-xl hidden">SIRIL</h1>
       </div>
       <div className="sm:flex items-center justify-center hidden">
-        <FlaskConicalIcon className="opacity-50 hover:opacity-100 hover:cursor-pointer transition-all duration-300 ease-in-out" />
+        <a href="https://badbytes.io" target="_blank">
+          <FlaskConicalIcon className="w-5 opacity-50 hover:opacity-90 hover:cursor-pointer transition-all duration-300 ease-in-out" />
+        </a>
       </div>
     </header>
   );
