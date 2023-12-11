@@ -4,7 +4,7 @@
   "description": "A bot called siril",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon .",
+    "dev": "nodemon ./functions/api.js",
     "build": "netlify deploy --prod"
   },
   "author": "sayuru-j",
