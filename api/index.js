@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const serverless = require("serverless-http");
 const axios = require("axios");
 const cors = require("cors");
 const { exec } = require("child_process");
@@ -8,6 +9,7 @@ const path = require("path");
 const openai = require("openai");
 
 const app = express();
+const router = express.Router();
 
 const PORT = process.env.PORT || 8000;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
@@ -22,7 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: "*" }));
 
-app.post("/", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const { message } = req.body;
 
@@ -62,7 +64,7 @@ app.post("/", async (req, res) => {
   }
 });
 
-app.post("/text-to-speech", async (req, res) => {
+router.post("/text-to-speech", async (req, res) => {
   try {
     const { text } = req.body;
 
@@ -139,12 +141,18 @@ app.post("/text-to-speech", async (req, res) => {
   }
 });
 
-app.get("/", (req, res) => {
-  res.send("Welcome");
+router.get("/", (req, res) => {
+  res.send("Server is running");
 });
 
 // Debug point
 console.log();
+
+app.use("/.netlify/functions/api", router);
+
+if (process.env.ENV === "production") {
+  module.exports.handler = serverless(app);
+}
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

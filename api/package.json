@@ -4,10 +4,8 @@
   "description": "A bot called siril",
   "main": "index.js",
   "scripts": {
-    "start": "node .",
     "dev": "nodemon .",
-    "build": "webpack",
-    "prod": "node dist/final.js"
+    "build": "netlify deploy --prod"
   },
   "author": "sayuru-j",
   "license": "ISC",
@@ -16,11 +14,10 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "netlify-cli": "^17.10.1",
+    "netlify-lambda": "^2.0.16",
     "nodemon": "^3.0.2",
-    "openai": "^4.20.1"
-  },
-  "devDependencies": {
-    "webpack": "^5.89.0",
-    "webpack-cli": "^5.1.4"
+    "openai": "^4.20.1",
+    "serverless-http": "^3.2.0"
   }
 }
