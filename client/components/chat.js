@@ -16,7 +16,10 @@ import Markdown from "react-markdown";
 import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight";
 import { dark, docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
-const apiUrl = "http://192.168.1.12:8000";
+const apiUrl =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://192.168.1.12:8000" ||
+  "http://localhost:8000";
 
 export default function Chat() {
   const [message, setMessage] = useState("");
@@ -50,6 +53,7 @@ export default function Chat() {
       }
 
       const data = await response.json();
+      console.log(data);
       setChatRes(data?.message);
       setMessage("");
       setIsReplyLoading(false);
@@ -189,15 +193,10 @@ export default function Chat() {
               contentEditable="true"
               className="w-full pl-6 pr-12 py-3 text-opacity-70 border rounded-3xl !outline-none focus:outline-none whitespace-normal resize-y"
               placeholder="Ask anything!"
-              value={message}
-              onChange={(e) => {
-                setMessage(e.target.value);
+              onInput={(e) => {
+                const content = e.target.textContent;
+                setMessage(content);
                 setSent(false);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  sendMessage();
-                }
               }}
             />
           </div>
