@@ -36,17 +36,6 @@ export default function Header() {
     }
   }
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setPersonalityChangeStatus("");
-      setTogglePersonality(!togglePersonality);
-    }, 5000);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [personalityChangeStatus]);
-
   return (
     <header className="flex items-center sm:justify-between justify-center w-full px-4 bg-darkText sm:rounded-none rounded-b-3xl">
       <div className="flex gap-1 items-center justify-center relative">

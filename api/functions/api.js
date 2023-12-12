@@ -147,7 +147,7 @@ router.post("/personality", async (req, res) => {
   res.send({ message: "Personality changed to " + character.name });
 });
 
-router.get("/personality-rest", (req, res) => {
+router.get("/personality-reset", (req, res) => {
   aiPersonality = personality.default.personality;
 
   res.send("Reset success!");
