@@ -1,5 +1,6 @@
 "use client";
 
+import { useTypingEffect } from "@/hooks/typing-effect";
 import { FlaskConicalIcon, GhostIcon } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -11,11 +12,40 @@ const apiUrl =
 
 export default function Header() {
   const [togglePersonality, setTogglePersonality] = useState(false);
-  const [name, setName] = useState("");
-  const [personality, setPersonality] = useState("");
-  const [personalityChangeStatus, setPersonalityChangeStatus] = useState("");
+  const [personalities, setPersonalities] = useState([]);
+  const [personalityChanged, setPersonalityChanged] = useState("");
 
-  async function updatePersonality() {
+  async function getPersonalities() {
+    try {
+      const response = await fetch(`${apiUrl}/personalities`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        console.error("Couldn't get personalities");
+      }
+
+      const data = await response.json();
+      setPersonalities(Object.values(data));
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    getPersonalities();
+
+    if (personalityChanged !== "") {
+      const timeoutId = setTimeout(resetPersonalityChanged, 5000);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [togglePersonality, personalityChanged]);
+
+  async function selectPersonality(personality) {
     try {
       const response = await fetch(`${apiUrl}/personality`, {
         method: "POST",
@@ -23,94 +53,85 @@ export default function Header() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name,
-          personality,
+          name: personality,
         }),
       });
 
-      if (response.ok) {
-        setPersonalityChangeStatus(await response.json());
+      if (!response.ok) {
+        console.error("Couldn't select a personality");
       }
+
+      const data = await response.json();
+      setPersonalityChanged(data.message);
+      setTogglePersonality(!togglePersonality);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
+  const resetPersonalityChanged = () => {
+    setPersonalityChanged("");
+  };
+
   return (
-    <header className="flex items-center sm:justify-between justify-center w-full px-4 bg-darkText sm:rounded-none rounded-b-3xl">
-      <div className="flex gap-1 items-center justify-center relative">
-        <button
-          onClick={() => setTogglePersonality(!togglePersonality)}
-          type="button"
-        >
-          <Image
-            priority={1}
-            className="w-16 antialiased"
-            src="/logo.png"
-            alt="siril-the-bot"
-            width={100}
-            height={100}
-          />
-        </button>
+    <div>
+      <header
+        className={`flex items-center justify-center w-full px-4 sm:rounded-none rounded-b-3xl ${
+          togglePersonality ? "bg-cards" : "bg-darkText"
+        }`}
+      >
+        <div className="flex gap-1 items-center justify-center relative">
+          <button
+            onClick={() => setTogglePersonality(!togglePersonality)}
+            type="button"
+          >
+            <Image
+              priority={1}
+              className={`w-16 antialiased ${
+                togglePersonality && "bg-darkText rounded-full"
+              }`}
+              src="/logo.png"
+              alt="siril-the-bot"
+              width={100}
+              height={100}
+            />
+          </button>
+
+          <h1 className="font-bold text-3xl absolute bottom-0 right-[33px] text-lightText">
+            <span className="animate-ping text-sm">.</span>
+          </h1>
+        </div>
+
         <div
-          className={`w-screen h-screen bg-cards items-center justify-center ${
+          className={`h-screen w-screen rounded-b-2xl shadow-sm ${
             togglePersonality ? "flex" : "hidden"
           }`}
         >
-          <div className="p-4 bg-lightText text-sm rounded-2xl text-darkText font-bold w-full max-w-sm mx-2">
-            {personalityChangeStatus ? (
-              <div>{personalityChangeStatus.message}</div>
-            ) : (
-              <div>
-                <input
-                  className="w-full bg-lightText placeholder:text-darkText py-2 !outline-none"
-                  placeholder="Name of the personality?"
-                  type="text"
-                  onChange={(e) => setName(e.target.value)}
-                />
-                <div
-                  className="!outline-none placeholder:text-darkText"
-                  onInput={(e) => {
-                    const content = e.target.textContent;
-                    setPersonality(content);
-                  }}
-                  placeholder="Give a personality..."
-                  contentEditable="true"
-                  suppressContentEditableWarning={true}
-                />
-              </div>
-            )}
-
-            <div className="p-2 flex items-center text-xs justify-end gap-2">
-              <button
-                type="button"
-                className="bg-darkText p-2 text-cards rounded-2xl hover:scale-110 transition-all duration-200 ease-in-out"
-                onClick={updatePersonality}
-              >
-                Done
-              </button>
-              <button
-                type="button"
-                className="bg-cards p-2 text-darkText rounded-2xl hover:scale-110 transition-all duration-200 ease-in-out"
-                onClick={() => setTogglePersonality(!togglePersonality)}
-              >
-                Cancel
-              </button>
+          <div className="flex flex-col w-full items-center justify-center gap-4">
+            <h1 className="text-darkText text-lg font-bold uppercase">
+              Select a personality:
+            </h1>
+            <div className="flex sm:flex-row flex-col gap-4">
+              {personalities.map((persona) => {
+                return (
+                  <button
+                    className="bg-darkText p-2 rounded-xl text-cards font-medium hover:scale-110 transition-all duration-200 ease-in-out"
+                    key={persona.id}
+                    onClick={() => selectPersonality(persona.id)}
+                  >
+                    {persona.name}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
-        <h1 className="font-bold text-3xl sm:hidden absolute bottom-0 right-8 text-lightText">
-          <span className="animate-ping">.</span>
-        </h1>
-      </div>
-      <div className="items-center justify-center gap-4 hidden">
-        <button type="button">
-          <GhostIcon className="text-cards opacity-50 hover:opacity-90 hover:cursor-pointer transition-all duration-300 ease-in-out" />
-        </button>
-        {/* <a href="https://badbytes.io" target="_blank">
-          <FlaskConicalIcon className="w-5 text-white opacity-50 hover:opacity-90 hover:cursor-pointer transition-all duration-300 ease-in-out" />
-        </a> */}
-      </div>
-    </header>
+      </header>
+      {personalityChanged && (
+        <h2 className="text-darkText font-bold text-center text-sm animate-pulse">
+          {personalityChanged}
+        </h2>
+      )}
+    </div>
   );
 }

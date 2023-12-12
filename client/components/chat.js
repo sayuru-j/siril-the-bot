@@ -15,7 +15,11 @@ import {
 import { useRef, useState } from "react";
 import Markdown from "react-markdown";
 import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight";
-import { dark, docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import {
+  darcula,
+  dark,
+  docco,
+} from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 const apiUrl =
   process.env.NEXT_PUBLIC_API_URL ||
@@ -163,7 +167,7 @@ export default function Chat() {
             </div>
           )}
         </div>
-        <div className="flex gap-2 p-5 rounded-xl overflow-y-auto bg-cards">
+        <div className="flex gap-2 p-5 rounded-xl overflow-auto bg-cards">
           <div className="text-darkText">
             {isReplyLoading ? (
               <Loader2Icon className="w-6 h-6 animate-spin" />
@@ -175,7 +179,7 @@ export default function Chat() {
             {chatRes ? (
               <div className="relative font-medium text-darkText">
                 <Markdown
-                  className="flex flex-col gap-4 leading-relaxed"
+                  className="space-y-4 leading-relaxed"
                   children={chatRes}
                   components={{
                     code(props) {
@@ -183,12 +187,12 @@ export default function Chat() {
                       const match = /language-(\w+)/.exec(className || "");
                       return match ? (
                         <SyntaxHighlighter
-                          className="rounded-xl"
+                          className="rounded-xl font-semibold my-2"
                           {...rest}
                           PreTag="div"
                           children={String(children).replace(/\n$/, "")}
                           language={match[1]}
-                          style={docco}
+                          style={dark}
                         />
                       ) : (
                         <code {...rest} className={className}>

@@ -17,8 +17,6 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const ELEVENLABS_VOICE_ID = process.env.ELEVENLABS_VOICE_ID;
 
-let aiPersonality = personality.default.personality;
-
 const openaiClient = new openai.OpenAI({
   apiKey: OPENAI_API_KEY,
 });
@@ -26,6 +24,8 @@ const openaiClient = new openai.OpenAI({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: "*" }));
+
+let aiPersonality = personality.Mahinda.personality;
 
 router.post("/", async (req, res) => {
   try {
@@ -141,14 +141,27 @@ router.post("/text-to-speech", async (req, res) => {
 });
 
 router.post("/personality", async (req, res) => {
-  const character = req.body;
+  const { name } = req.body;
 
-  aiPersonality = character.personality;
-  res.send({ message: "Personality changed to " + character.name });
+  try {
+    if (Object.keys(personality).includes(name)) {
+      aiPersonality = personality[name].personality;
+      res.send({ message: `Personality set to ${name}` });
+    } else {
+      res.status(500).send({ error: "Invalid personality name" });
+    }
+  } catch (error) {
+    console.error("Error", error.message);
+    res.status(500).send({ error: error.message });
+  }
+});
+
+router.get("/personalities", async (req, res) => {
+  res.json(personality);
 });
 
 router.get("/personality-reset", (req, res) => {
-  aiPersonality = personality.default.personality;
+  aiPersonality = personality.Mahinda.personality;
 
   res.send("Reset success!");
 });
