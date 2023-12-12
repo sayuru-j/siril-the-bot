@@ -117,7 +117,7 @@ export default function Chat() {
 
   return (
     <div className="max-w-3xl mx-auto pt-2 sm:px-0 px-4">
-      <div className="flex flex-col gap-2 min-h-[80vh]">
+      <div className="flex flex-col gap-2 min-h-screen">
         <div className="py-2 px-4 rounded-3xl relative overflow-y-auto text-darkText font-medium">
           {prevMessage && sent && (
             <div>
@@ -232,7 +232,7 @@ export default function Chat() {
         </div>
       </div>
 
-      <div className="sticky bottom-0 z-50 pb-2 pt-6 max-w-3xl mx-auto flex flex-col justify-center items-center rounded-t-3xl">
+      <div className="sticky bottom-0 z-50 pb-2 pt-6 max-w-3xl mx-auto flex flex-col justify-center items-center bg-white">
         <div className="flex w-full items-center justify-center relative">
           <div className="w-full">
             <div

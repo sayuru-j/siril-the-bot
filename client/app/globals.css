@@ -4,5 +4,5 @@
 
 div[contenteditable="true"]:empty:before {
   content: attr(placeholder);
-  color: #aaa;
+  color: #573a4a;
 }

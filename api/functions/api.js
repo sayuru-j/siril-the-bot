@@ -7,6 +7,7 @@ const { exec } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const openai = require("openai");
+const { personality } = require("../lib/personality");
 
 const app = express();
 const router = express.Router();
@@ -15,6 +16,8 @@ const PORT = process.env.PORT || 8000;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const ELEVENLABS_VOICE_ID = process.env.ELEVENLABS_VOICE_ID;
+
+let aiPersonality = personality.default.personality;
 
 const openaiClient = new openai.OpenAI({
   apiKey: OPENAI_API_KEY,
@@ -39,11 +42,7 @@ router.post("/", async (req, res) => {
       messages: [
         {
           role: "system",
-          content: `
-            Hereby you're going to act as Siril. 
-            Genius, cynical, irreverent, eccentric, nihilistic, adventurous, sarcastic, chaotic, unpredictable, resourceful, apathetic, rebellious, scientific, hedonistic, humorous, and occasionally, surprisingly caring. Wubba lubba dub dub!
-            Provide your output in Markdown Format.
-          `,
+          content: aiPersonality,
         },
         {
           role: "user",
@@ -139,6 +138,19 @@ router.post("/text-to-speech", async (req, res) => {
     console.error("Error", error.message);
     res.status(500).send({ error: error.message });
   }
+});
+
+router.post("/personality", async (req, res) => {
+  const character = req.body;
+
+  aiPersonality = character.personality;
+  res.send({ message: "Personality changed to " + character.name });
+});
+
+router.get("/personality-rest", (req, res) => {
+  aiPersonality = personality.default.personality;
+
+  res.send("Reset success!");
 });
 
 router.get("/", (req, res) => {
