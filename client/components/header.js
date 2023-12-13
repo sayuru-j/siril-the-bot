@@ -75,8 +75,8 @@ export default function Header() {
 
   return (
     <header
-      className={`flex items-center justify-center h-[64.05px] sticky top-0 w-full px-4 sm:rounded-none rounded-b-3xl ${
-        togglePersonality ? "bg-cards" : "bg-darkText"
+      className={`flex items-center justify-center sticky top-0 w-full px-4 sm:rounded-none rounded-b-3xl ${
+        togglePersonality ? "bg-cards" : "bg-darkText h-[64.05px]"
       }`}
     >
       <div className="flex gap-1 items-center justify-center relative">
