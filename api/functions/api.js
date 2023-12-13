@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: "*" }));
 
 // Setting the default personality
-let aiPersonality = personality.Mahinda.personality;
+let character = personality.Mahinda;
 
 // Chat routes
 router.post("/chat", async (req, res) => {
@@ -41,7 +41,7 @@ router.post("/chat", async (req, res) => {
       messages: [
         {
           role: "system",
-          content: aiPersonality,
+          content: character.personality,
         },
         {
           role: "user",
@@ -52,6 +52,7 @@ router.post("/chat", async (req, res) => {
     });
 
     res.send({
+      character: character.name,
       message: chatResponse.choices[0]?.message?.content,
     });
   } catch (error) {
@@ -135,7 +136,7 @@ router.post("/personality", async (req, res) => {
 
   try {
     if (Object.keys(personality).includes(name)) {
-      aiPersonality = personality[name].personality;
+      character = personality[name].personality;
       res.send({ message: `Personality set to ${name}` });
     } else {
       res.status(500).send({ error: "Invalid personality name" });
@@ -156,7 +157,7 @@ router.get("/personality-reset", async (req, res) => {
     personality: "Hereby you're ChatGPT",
   };
 
-  aiPersonality = baseCharacter.personality;
+  character = baseCharacter;
 
   res.send({ message: `Personality reset to ${baseCharacter.name}` });
 });
