@@ -48,7 +48,7 @@ export default function Chat() {
       setSent(true);
       setIsReplyLoading(true);
 
-      const response = await fetch(apiUrl, {
+      const response = await fetch(`${apiUrl}/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
