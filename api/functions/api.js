@@ -8,6 +8,8 @@ const fs = require("fs");
 const path = require("path");
 const openai = require("openai");
 const { personality } = require("../lib/personality");
+const { connectDatabase } = require("../db/connection");
+const { send_message } = require("../lib/whatsapp");
 
 const app = express();
 const router = express.Router();
@@ -16,6 +18,9 @@ const PORT = process.env.PORT || 8000;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const ELEVENLABS_VOICE_ID = process.env.ELEVENLABS_VOICE_ID;
+const MONGO_DB_URI = process.env.MONGO_DB_URI + "error";
+const SENDER_ID = process.env.WA_PHONE_NUMBER_ID;
+const META_VERSION = process.env.CLOUD_API_VERSION;
 
 const openaiClient = new openai.OpenAI({
   apiKey: OPENAI_API_KEY,
@@ -24,6 +29,8 @@ const openaiClient = new openai.OpenAI({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: "*" }));
+
+connectDatabase(MONGO_DB_URI);
 
 // Setting the default personality
 let character = personality.Siril;
