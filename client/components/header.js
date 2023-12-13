@@ -103,7 +103,7 @@ export default function Header() {
         </div>
 
         <div
-          className={`h-screen w-screen rounded-b-2xl shadow-sm ${
+          className={`h-screen w-screen rounded-b-2xl ${
             togglePersonality ? "flex" : "hidden"
           }`}
         >
