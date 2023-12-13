@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: "*" }));
 
 // Setting the default personality
-let character = personality.Mahinda;
+let character = personality.ChatGPT;
 
 // Chat routes
 router.post("/chat", async (req, res) => {
@@ -132,11 +132,11 @@ router.post("/text-to-speech", async (req, res) => {
 });
 
 router.post("/personality", async (req, res) => {
-  const { name } = req.body;
+  const { name } = await req.body;
 
   try {
     if (Object.keys(personality).includes(name)) {
-      character = personality[name].personality;
+      character = personality[name];
       res.send({ message: `Personality set to ${name}` });
     } else {
       res.status(500).send({ error: "Invalid personality name" });
@@ -152,14 +152,9 @@ router.get("/personalities", async (req, res) => {
 });
 
 router.get("/personality-reset", async (req, res) => {
-  const baseCharacter = {
-    name: "ChatGPT",
-    personality: "Hereby you're ChatGPT",
-  };
+  character = personality.ChatGPT;
 
-  character = baseCharacter;
-
-  res.send({ message: `Personality reset to ${baseCharacter.name}` });
+  res.send({ message: `Personality reset to ${character.name}` });
 });
 
 // Server state check
