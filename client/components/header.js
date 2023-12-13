@@ -126,7 +126,7 @@ export default function Header() {
         </div>
       </div>
       {personalityChanged && (
-        <h2 className="text-darkText font-bold text-center text-sm animate-pulse">
+        <h2 className="text-lightText font-bold text-center text-sm animate-pulse">
           {personalityChanged}
         </h2>
       )}

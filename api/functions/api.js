@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: "*" }));
 
 // Setting the default personality
-let character = personality.ChatGPT;
+let character = personality.Siril;
 
 // Chat routes
 router.post("/chat", async (req, res) => {
