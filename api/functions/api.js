@@ -25,20 +25,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: "*" }));
 
+// Setting the default personality
 let aiPersonality = personality.Mahinda.personality;
 
-router.post("/", async (req, res) => {
+// Chat routes
+router.post("/chat", async (req, res) => {
   try {
     const { message } = req.body;
 
-    if (!message) {
-      res.send({ message: "Ask me something..." });
-      return;
-    }
+    // if (!message) {
+    //   res.send({ message: "Ask me something..." });
+    // }
 
-    const chatCompletion = await openaiClient.chat.completions.create({
-      response_format: { type: "text" },
-      temperature: 0.2,
+    const chatResponse = await openaiClient.chat.completions.create({
       messages: [
         {
           role: "system",
@@ -52,92 +51,83 @@ router.post("/", async (req, res) => {
       model: "gpt-3.5-turbo-1106",
     });
 
-    if (!chatCompletion.choices || chatCompletion.choices.length === 0) {
-      throw new Error("No valid completion from OpenAI Chat API");
-    }
-
-    res.send({ message: chatCompletion.choices[0].message.content });
+    res.send({
+      message: chatResponse.choices[0]?.message?.content,
+    });
   } catch (error) {
-    console.error("Error", error.message);
+    console.error(error);
     res.status(500).send({ error: error.message });
   }
 });
 
 router.post("/text-to-speech", async (req, res) => {
-  try {
-    const { text } = req.body;
+  // Uncomment the following to enable the text to speech
+  // try {
+  //   const { text } = req.body;
+  //   const data = {
+  //     model_id: "eleven_monolingual_v1",
+  //     text,
+  //     voice_settings: {
+  //       similarity_boost: 0.5,
+  //       stability: 0.5,
+  //       style: 1.0,
+  //       use_speaker_boost: true,
+  //     },
+  //   };
+  //   const config = {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Accept: "audio/mpeg",
+  //       "xi-api-key": ELEVENLABS_API_KEY,
+  //     },
+  //     responseType: "stream",
+  //   };
+  //   const response = await axios.post(
+  //     `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`,
+  //     data,
+  //     config
+  //   );
+  //   if (!response || !response.data) {
+  //     throw new Error("Invalid response from Eleven Labs API");
+  //   }
+  //   // const outputStream = fs.createWriteStream(
+  //   //   path.resolve(__dirname, "audio", "speech.mp3")
+  //   // );
+  //   // Saving in client
+  //   const outputStream = fs.createWriteStream(
+  //     path.join(__dirname, "..", "client", "public", "audio", "speech.mp3")
+  //   );
+  //   response.data.pipe(outputStream);
+  //   outputStream.on("finish", () => {
+  //     console.log(
+  //       "Speech file saved as 'speech.mp3' at " +
+  //         path.join(
+  //           __dirname,
+  //           "..",
+  //           "client",
+  //           "public",
+  //           "audio",
+  //           "speech.mp3"
+  //         ) +
+  //         ", time: " +
+  //         new Date().toISOString()
+  //     );
+  //     // Open the file using Windows Media Player
+  //     // exec(
+  //     //   `start PotPlayerMini64.exe "${path.resolve(
+  //     //     __dirname,
+  //     //     "audio",
+  //     //     "speech.mp3"
+  //     //   )}"`
+  //     // );
+  //     res.send({ message: "Text-to-speech completed." });
+  //   });
+  // } catch (error) {
+  //   console.error("Error", error.message);
+  //   res.status(500).send({ error: error.message });
+  // }
 
-    const data = {
-      model_id: "eleven_monolingual_v1",
-      text,
-      voice_settings: {
-        similarity_boost: 0.5,
-        stability: 0.5,
-        style: 1.0,
-        use_speaker_boost: true,
-      },
-    };
-
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "audio/mpeg",
-        "xi-api-key": ELEVENLABS_API_KEY,
-      },
-      responseType: "stream",
-    };
-
-    const response = await axios.post(
-      `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`,
-      data,
-      config
-    );
-
-    if (!response || !response.data) {
-      throw new Error("Invalid response from Eleven Labs API");
-    }
-
-    // const outputStream = fs.createWriteStream(
-    //   path.resolve(__dirname, "audio", "speech.mp3")
-    // );
-
-    // Saving in client
-    const outputStream = fs.createWriteStream(
-      path.join(__dirname, "..", "client", "public", "audio", "speech.mp3")
-    );
-
-    response.data.pipe(outputStream);
-
-    outputStream.on("finish", () => {
-      console.log(
-        "Speech file saved as 'speech.mp3' at " +
-          path.join(
-            __dirname,
-            "..",
-            "client",
-            "public",
-            "audio",
-            "speech.mp3"
-          ) +
-          ", time: " +
-          new Date().toISOString()
-      );
-
-      // Open the file using Windows Media Player
-      // exec(
-      //   `start PotPlayerMini64.exe "${path.resolve(
-      //     __dirname,
-      //     "audio",
-      //     "speech.mp3"
-      //   )}"`
-      // );
-
-      res.send({ message: "Text-to-speech completed." });
-    });
-  } catch (error) {
-    console.error("Error", error.message);
-    res.status(500).send({ error: error.message });
-  }
+  res.send({ message: "Text-to-speech not found." });
 });
 
 router.post("/personality", async (req, res) => {
@@ -160,12 +150,18 @@ router.get("/personalities", async (req, res) => {
   res.json(personality);
 });
 
-router.get("/personality-reset", (req, res) => {
-  aiPersonality = personality.Mahinda.personality;
+router.get("/personality-reset", async (req, res) => {
+  const baseCharacter = {
+    name: "ChatGPT",
+    personality: "Hereby you're ChatGPT",
+  };
 
-  res.send("Reset success!");
+  aiPersonality = baseCharacter.personality;
+
+  res.send({ message: `Personality reset to ${baseCharacter.name}` });
 });
 
+// Server state check
 router.get("/", (req, res) => {
   res.send("Server is running");
 });
