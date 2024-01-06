@@ -4,8 +4,19 @@
   "description": "",
   "main": "api.js",
   "scripts": {
-    "start": "nodemon api.js"
+    "start": "nodemon ./src/api.js"
   },
   "author": "Sayuru J",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.5",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^8.0.3",
+    "netlify-cli": "^17.11.1",
+    "nodemon": "^3.0.2",
+    "openai": "^4.24.1",
+    "serverless-http": "^3.2.0"
+  }
 }
