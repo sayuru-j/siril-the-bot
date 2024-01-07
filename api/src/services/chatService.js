@@ -33,10 +33,15 @@ class ChatService {
     });
 
     if (conversationExists) {
-      return false;
+      const conversationExistsMessage = {
+        message: "Conversation already exists",
+        conversationId: conversationExists._id,
+      };
+
+      return conversationExistsMessage;
     }
 
-    await Conversation.create({
+    const newConvo = await Conversation.create({
       user: senderId,
       messages: [
         {
@@ -44,10 +49,10 @@ class ChatService {
           content: messageContent,
         },
       ],
-      participants: [{ senderId }],
+      participants: [senderId],
     });
 
-    return true;
+    return newConvo;
   }
 }
 

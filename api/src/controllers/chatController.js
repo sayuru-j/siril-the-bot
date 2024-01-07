@@ -24,24 +24,22 @@ class ChatController {
     try {
       const { conversationId, messageContent, senderId } = req.body;
 
-      const newChat = await ChatService.addNewConversationByUser(
-        senderId,
-        messageContent
-      );
-
-      if (newChat === true) {
-        res.status(200).send(newChat);
-      }
-
-      if (newChat === false) {
-        const newMessage = await ChatService.addMessage(
-          conversationId,
+      if (!conversationId) {
+        const newChat = await ChatService.addNewConversationByUser(
           senderId,
           messageContent
         );
 
-        res.status(200).json(newMessage);
+        return res.status(200).send(newChat);
       }
+
+      const newMessage = await ChatService.addMessage(
+        conversationId,
+        senderId,
+        messageContent
+      );
+
+      return res.status(200).json(newMessage);
     } catch (error) {
       console.error(error);
       return res.status(500).json({
