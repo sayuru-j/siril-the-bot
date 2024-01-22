@@ -2,8 +2,10 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const ConnectDB = require("../db/connection");
+
 const chatRoute = require("./routes/chatRoute");
 const userRoute = require("./routes/userRoute");
+const openairRoute = require("./routes/openaiConfigRoute");
 
 const app = express();
 
@@ -21,6 +23,8 @@ ConnectDB();
 // Routes
 app.use("/chat", chatRoute);
 app.use("/user", userRoute);
+
+app.use("/config/openai", openairRoute);
 
 app.listen(process.env.API_PORT, () => {
   console.log(`App listening on ${process.env.API_PORT}`);
