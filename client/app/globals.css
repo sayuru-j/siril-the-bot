@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+div[contenteditable="true"]:empty:before {
+  content: attr(placeholder);
+  color: #573a4a;
+}
