@@ -4,7 +4,7 @@ const field = "User Controller";
 
 class UserController {
   static async getUser(req, res) {
-    const userId = req.params.userId;
+    const { userId } = req.query;
 
     try {
       const user = await UserService.getUserById(userId);

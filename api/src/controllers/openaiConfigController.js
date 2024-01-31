@@ -54,9 +54,9 @@ class OpenAIConfigController {
   }
   static async ActivateKey(req, res) {
     try {
-      const { id } = req.query;
+      const { keyId } = req.query;
 
-      const response = await OpenAIConfigService.ActivateKey(id);
+      const response = await OpenAIConfigService.ActivateKey(keyId);
 
       return res.status(200).json({
         message: "Key activated!",
@@ -71,9 +71,9 @@ class OpenAIConfigController {
   }
   static async DeleteKey() {
     try {
-      const { id } = req.query;
+      const { keyId } = req.query;
 
-      const response = await OpenAIConfigService.DeleteKey(id);
+      const response = await OpenAIConfigService.DeleteKey(keyId);
 
       return res.status(200).json({
         message: "Key deleted!",

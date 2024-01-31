@@ -1,29 +1,33 @@
+const ChatError = require("../exception/chatException");
 const ChatService = require("../services/chatService");
 const OpenAiChatService = require("../services/openaiChatService");
 
 class ChatController {
   static async getConversation(req, res) {
     try {
-      const userId = req.params.userId;
+      const { userId } = req.query;
+
+      if (!userId) throw new ChatError.NullUserIdError();
+
       const conversation = await ChatService.getConversationByUser(userId);
 
-      if (!conversation) {
-        return res.status(404).json({
-          error: "Conversation not found.",
-        });
-      }
-
-      return res.send(conversation);
+      return res.send({
+        resource: "/chat/conversation",
+        conversation,
+      });
     } catch (error) {
       console.error(error);
-      res.status(500).json({
-        error: "Internal Server Error",
+
+      const statusCode = error instanceof ChatError.NullUserIdError ? 400 : 500;
+      res.status(statusCode).json({
+        error: error.message,
       });
     }
   }
   static async addMessage(req, res) {
     try {
-      const { conversationId, messageContent, senderId } = req.body;
+      const { conversationId, senderId } = req.query;
+      const { messageContent } = req.body;
 
       if (!conversationId) {
         const newChat = await ChatService.addNewConversationByUser(
