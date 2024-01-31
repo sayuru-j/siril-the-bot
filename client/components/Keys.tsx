@@ -27,10 +27,6 @@ export default function Keys({ isSelected }: KeysProps) {
     isSelected: false,
   });
 
-  if (!isSelected) {
-    return null;
-  }
-
   const [keyList, setKeyList] = useState<Key[]>();
 
   async function fetchKeys() {
