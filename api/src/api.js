@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const ConnectDB = require("../db/connection");
+const ConnectDB = require("./db/connection");
 
 const chatRoute = require("./routes/chatRoute");
 const userRoute = require("./routes/userRoute");
@@ -21,6 +21,9 @@ app.use(cors({ origin: "*" }));
 ConnectDB();
 
 // Routes
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
 app.use("/chat", chatRoute);
 app.use("/user", userRoute);
 

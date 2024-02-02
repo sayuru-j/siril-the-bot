@@ -13,7 +13,7 @@ type Key = {
   createdAt: Date;
 };
 
-const baseUrl = "http://localhost:8000";
+const baseUrl = "http://192.168.3.217:8000";
 
 type SelectedItem = {
   name: string;
