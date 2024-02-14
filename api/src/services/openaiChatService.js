@@ -19,7 +19,7 @@ class OpenAiChatService {
           {
             role: "system",
             content: `You're Siril. A bot who specializes in programming! Reply in short messages. A brief history of this conversation: is provided here. History : ${chatHistory?.messages.slice(
-              -10
+              -50
             )}`,
           },
           {
