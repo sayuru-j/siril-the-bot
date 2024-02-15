@@ -8,7 +8,7 @@ interface ConversationProps {
 const Conversation = ({ conversation }: ConversationProps) => {
   const userId = "659a432eb3d1e2d9f0a3e4a5";
   return (
-    <div className="m-5 flex flex-col gap-4 max-w-2xl mx-auto">
+    <div className="flex flex-col gap-4 max-w-2xl mx-auto h-screen overflow-y-scroll pt-5 pb-20 px-5">
       {conversation.messages.map((message) => (
         <div
           className={`${
@@ -23,17 +23,19 @@ const Conversation = ({ conversation }: ConversationProps) => {
           <div className="flex justify-between">
             {message.sender !== userId && (
               <Image
-                className="rounded-full object-cover w-10 h-10 shadow-[-2px_4px_0px_rgba(0,0,0,1)]"
+                className="rounded-full object-cover w-8 h-8 shadow-[-2px_4px_0px_rgba(0,0,0,1)]"
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/1200px-ChatGPT_logo.svg.png"
                 alt=""
                 width={50}
                 height={50}
               />
             )}
-            <h2 className="text-sm text-ellipsis px-4">{message.content}</h2>
+            <h2 className="text-sm font-mono text-ellipsis px-3">
+              {message.content}
+            </h2>
             {message.sender === userId && (
               <Image
-                className="rounded-full object-cover w-10 h-10 shadow-[2px_4px_0px_rgba(0,0,0,1)]"
+                className="rounded-full object-cover w-8 h-8 shadow-[2px_4px_0px_rgba(0,0,0,1)]"
                 src="https://upload.wikimedia.org/wikipedia/commons/a/a0/The_Weeknd_Portrait_by_Brian_Ziff.jpg"
                 alt=""
                 width={50}
